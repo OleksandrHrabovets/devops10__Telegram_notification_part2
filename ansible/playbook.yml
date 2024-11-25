@@ -2,12 +2,12 @@
   name: Configure Wordpress server
   become: true
   vars:
-    ansible_python_interpreter: usr/bin/python3
-    
+    ansible_python_interpreter: /usr/bin/python3
+
   tasks:
     - name: Ensure Apache2 and PHP are installed
       apt:
-        name: {{ item }}
+        name: "{{ item }}"
         state: present
         update_cashe: yes
       loop:
