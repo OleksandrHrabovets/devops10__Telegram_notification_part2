@@ -56,19 +56,20 @@ build {
   sources = ["source.amazon-ebs.ubuntu"]
 
   provisioner "shell" {
-    inline = |
-    "export DEBIAN_FRONTEND=noninteractive",
+    inline = [
+      "export DEBIAN_FRONTEND=noninteractive",
     
-    "sudo add-apt-repository universe -y",
+      "sudo add-apt-repository universe -y",
 
-    "sudo apt-get install -y",
-    "sudo apt-get upgrade -y",
+      "sudo apt-get install -y",
+      "sudo apt-get upgrade -y",
 
-    "sudo apt-get install -y python3 python3-pip",
-    "sudo apt-get install -y apache2 php php-mysql",
+      "sudo apt-get install -y python3 python3-pip",
+      "sudo apt-get install -y apache2 php php-mysql",
 
-    "sudo systemctl enable apache2",
-    "sudo systemctl start apache2"    
+      "sudo systemctl enable apache2",
+      "sudo systemctl start apache2"    
+    ]
   }
 
   provisioner "ansible" {
