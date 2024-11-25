@@ -1,0 +1,21 @@
+- name: Configure Wordpress server
+  hosts: all
+  become: true
+  vars:
+    ansible_python_interpreter: usr/bin/python3
+  tasks:
+    - name: Ensure Apache2 and PHP are installed
+      apt:
+        name: {{ item }}
+        state: present
+        update_cashe: yes
+      loop:
+        apache2
+        php
+        php-mysql
+      
+    - name: Start and enable Apache
+      systemd:
+        name: apache2
+        state: started
+        enabled: yes

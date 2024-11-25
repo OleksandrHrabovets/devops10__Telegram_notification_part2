@@ -1,0 +1,56 @@
+name: CI for Wordpress with telegram notification
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build AMI and Notify
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+          aws-secret-access-key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          aws-region: eu-central-1
+
+      - name: Initialize Packer plugins
+        id: packer_init
+        run: |
+          cd packer
+          packer init wordpress.pkr.hcl
+        continue-on-error: true
+
+      - name: Build AMI using Packer
+        id: packer_build
+        run: |
+          cd packer
+          packer build wordpress.pkr.hcl
+
+      - name: Collect status
+        id: collect_status
+        run: |
+          echo "PACKER_INIT_STATUS=$([[ '${{ steps.packer_init.outcome }}' == 'success' ]] && echo '✅ Success' || echo '❌ Failed')" >> $GITHUB_ENV
+          echo "PACKER_INIT_ERRORS=$([[ '${{ steps.packer_init.outcome }}' != 'success' ]] && echo '{{ steps.packer_init.outputs }}' || echo '')" >> $GITHUB_ENV
+          echo "PACKER_BUILD_STATUS=$([[ '${{ steps.packer_build.outcome }}' == 'success' ]] && echo '✅ Success' || echo '❌ Failed')" >> $GITHUB_ENV
+          echo "PACKER_BUILD_ERRORS=$([[ '${{ steps.packer_build.outcome }}' != 'success' ]] && echo '{{ steps.packer_build.outputs }}' || echo '')" >> $GITHUB_ENV
+
+      - name: Send Telegram Notification
+        if: always()
+        uses: cbrgm/telegram-github-action@v1
+        with:
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          message: |
+            *GitHab Actions CI Results*:
+            *Step name*: Packer Init
+            *Status*: ${{ env.PACKER_INIT_STATUS }}
+            Errors: ${{ env.PACKER_INIT_ERRORS }}
+            *Step name*: Packer Build
+            *Status*: ${{ env.PACKER_BUILD_STATUS }}
+            Errors: ${{ env.PACKER_BUILD_ERRORS }}
