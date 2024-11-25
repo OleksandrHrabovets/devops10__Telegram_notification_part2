@@ -74,6 +74,6 @@ build {
 
   provisioner "ansible" {
     playbook_file = "../ansible/playbook.yml"
-    exttra_arguments = ["--extra-vars", "ansible_python_interpreter=/usr/bin/python3"]
+    extra_arguments = ["--extra-vars", "ansible_python_interpreter=/usr/bin/python3"]
   }
 }
