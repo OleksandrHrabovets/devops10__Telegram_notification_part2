@@ -34,6 +34,7 @@ jobs:
 
       - name: Collect status
         id: collect_status
+        if: always()
         run: |
           echo "PACKER_INIT_STATUS=$([[ '${{ steps.packer_init.outcome }}' == 'success' ]] && echo '✅ Success' || echo '❌ Failed')" >> $GITHUB_ENV
           echo "PACKER_INIT_ERRORS=$([[ '${{ steps.packer_init.outcome }}' != 'success' ]] && echo '{{ steps.packer_init.outputs }}' || echo '')" >> $GITHUB_ENV
