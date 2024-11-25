@@ -1,8 +1,9 @@
-- name: Configure Wordpress server
-  hosts: all
+- hosts: all
+  name: Configure Wordpress server
   become: true
   vars:
     ansible_python_interpreter: usr/bin/python3
+    
   tasks:
     - name: Ensure Apache2 and PHP are installed
       apt:
