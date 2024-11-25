@@ -37,9 +37,9 @@ jobs:
         if: always()
         run: |
           echo "PACKER_INIT_STATUS=$([[ '${{ steps.packer_init.outcome }}' == 'success' ]] && echo '✅ Success' || echo '❌ Failed')" >> $GITHUB_ENV
-          echo "PACKER_INIT_ERRORS=$([[ '${{ steps.packer_init.outcome }}' != 'success' ]] && echo $(cat packer init.log) || echo '')" >> $GITHUB_ENV
+          echo "PACKER_INIT_ERRORS=$([[ '${{ steps.packer_init.outcome }}' != 'success' ]] && echo $(cat packer/init.log) || echo '')" >> $GITHUB_ENV
           echo "PACKER_BUILD_STATUS=$([[ '${{ steps.packer_build.outcome }}' == 'success' ]] && echo '✅ Success' || echo '❌ Failed')" >> $GITHUB_ENV
-          echo "PACKER_BUILD_ERRORS=$([[ '${{ steps.packer_build.outcome }}' != 'success' ]] && echo $(cat packer build.log) || echo '')" >> $GITHUB_ENV
+          echo "PACKER_BUILD_ERRORS=$([[ '${{ steps.packer_build.outcome }}' != 'success' ]] && echo $(cat packer/build.log) || echo '')" >> $GITHUB_ENV
 
       - name: Send Telegram Notification
         if: always()

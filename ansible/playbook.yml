@@ -10,9 +10,9 @@
         state: present
         update_cashe: yes
       loop:
-        apache2
-        php
-        php-mysql
+        - apache2
+        - php
+        - php-mysql
       
     - name: Start and enable Apache
       systemd:
